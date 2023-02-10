@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap" rel="stylesheet">
+    <style>
+        /* Add styles for the race track and horses */
+        .race-track {
+            width: 500px;
+            height: 200px;
+            border: 1px solid black;
+            position: relative;
+            background-color: #b9875b;
+
+        }
+
+        .horse-sprite {
+            position: absolute;
+            bottom: 0;
+            width: 70px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .horse-name {
+            font-size: 10px;
+            margin-top: 10px;
+
+        }
+
+        .finish-line {
+            width: 5px;
+            height: 200px;
+            background-image: url("");
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        #imagehorse {
+            width: 40%;
+            height: 25%;
+        }
+
+        .race-track {
+            width: 500px;
+            height: 200px;
+            border: 1px solid black;
+            position: relative;
+            background-color: #b9875b;
+            margin: 0 auto;
+        }
+
+        css .horse-sprite {
+            position: absolute;
+            bottom: 0;
+            width: 70px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .horse-name {
+            font-size: 10px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .finish-line {
+            width: 5px;
+            height: 200px;
+            background-image: url("");
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        #imagehorse {
+            width: 40%;
+            height: 25%;
+        }
+
+        /* Add styles for betting area */
+        .betting-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .balance-display {
+            margin-bottom: 10px;
+        }
+
+        #bet-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        #bet-form label,
+        #bet-form input,
+        #bet-form select,
+        #place-bet-button {
+            margin-bottom: 10px;
+        }
+
+        #place-bet-button {
+            background-color: #f47c7c;
+            color: #fff;
+            border-radius: 10px;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #place-bet-button:hover {
+            background-color: #f74d4d;
+        }
+
+        .race-result-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #win-lose-display {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        body {
+            background-color: lightgreen;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Add the race track -->
+    <div class="race-track">
+        <div class="finish-line"></div>
+        <div class="horse-sprite" id="horse1">
+            <div class="horse-name">Horse 1</div>
+            <img id="imagehorse" src="https://thumbs.gfycat.com/DarkMediumArabianhorse-max-1mb.gif" />
+        </div>
+        <div class="horse-sprite" id="horse2">
+            <div class="horse-name">Horse 2</div>
+            <img id="imagehorse" src="https://thumbs.gfycat.com/DarkMediumArabianhorse-max-1mb.gif" />
+        </div>
+        <div class="horse-sprite" id="horse3">
+            <div class="horse-name">Horse 3</div>
+            <img id="imagehorse" src="https://thumbs.gfycat.com/DarkMediumArabianhorse-max-1mb.gif" />
+
+        </div>
+        <div class="horse-sprite" id="horse4">
+            <div class="horse-name">Horse 4</div>
+            <img id="imagehorse" src="https://thumbs.gfycat.com/DarkMediumArabianhorse-max-1mb.gif" />
+        </div>
+    </div>
+
+    <div class="betting-area">
+        <div class="balance-display">
+            <p>Balance: $<span id="balance">50</span></p>
+        </div>
+        <form id="bet-form">
+            <label for="bet-amount">Bet amount:</label>
+            <input type="text" id="bet-amount" name="bet-amount">
+            <br>
+            <label for="horse-number">Bet on horse:</label>
+            <select id="horse-number" name="horse-number">
+                <option value="1">Horse 1</option>
+                <option value="2">Horse 2</option>
+                <option value="3">Horse 3</option>
+                <option value="4">Horse 4</option>
+            </select>
+            <br>
+            <button type="button" id="place-bet-button">Place bet</button>
+        </form>
+        <div class="race-result-display">
+            <p id="bet-display">Bet: $<span id="bet-amount-display">0</span> on horse <span
+                    id="bet-horse-display">0</span></p>
+            <p id="win-lose-display"></p>
+            <p id="new-balance-display">New balance: $<span id="new-balance">50</span></p>
+        </div>
+    </div>
+
+
+    <script>
+        const horseSprites = document.querySelectorAll(".horse-sprite");
+        let raceFinished = false;
+        let currentLeftPosition = 0;
+        const raceTrackWidth = document.querySelector(".race-track").offsetWidth;
+        const raceTrackHeight = document.querySelector(".race-track").offsetHeight;
+        const balanceDisplay = document.querySelector("#balance");
+        const betAmountInput = document.querySelector("#bet-amount");
+        const horseNumberSelect = document.querySelector("#horse-number");
+        const placeBetButton = document.querySelector("#place-bet-button");
+        const betDisplay = document.querySelector("#bet-display");
+        const betAmountDisplay = document.querySelector("#bet-amount-display");
+        const betHorseDisplay = document.querySelector("#bet-horse-display");
+        const winLoseDisplay = document.querySelector("#win-lose-display");
+        const newBalanceDisplay = document.querySelector("#new-balance-display");
+        const newBalance = document.querySelector("#new-balance");
+        let balance = 50;
+        // Update balance display
+        balanceDisplay.textContent = balance;
+
+        placeBetButton.addEventListener("click", function () {
+            raceFinished = false;
+            placeBetButton.disabled = true;
+            horseSprites.forEach((horseSprite, i) => {
+                horseSprite.style.left = 0;
+                horseSprite.style.bottom = (raceTrackHeight * i / 6) + "px";
+            });
+            // Get the bet amount and horse number
+            const betAmount = parseInt(betAmountInput.value);
+            const horseNumber = parseInt(horseNumberSelect.value);
+
+            // Validate the bet amount
+            if (isNaN(betAmount) || betAmount <= 0) {
+                alert("Please enter a valid bet amount.");
+                return;
+            }
+            if (betAmount > balance) {
+                alert("Insufficient balance. Please enter a valid bet amount.");
+                return;
+            }
+
+            // Update the bet display
+            betAmountDisplay.textContent = betAmount;
+            betHorseDisplay.textContent = horseNumber;
+
+            // Place the bet and start the race
+            balance -= betAmount;
+            balanceDisplay.textContent = balance;
+
+            // Run the race
+            const race = setInterval(() => {
+                if (raceFinished) {
+                    clearInterval(race);
+                    return;
+                }
+
+                horseSprites.forEach((horseSprite, i) => {
+                    const speed = Math.random() * 8;
+                    const currentLeft = parseInt(horseSprite.style.left, 10);
+                    horseSprite.style.left = (currentLeft + speed) + "px";
+
+                    if (currentLeft + speed >= raceTrackWidth - 50) {
+                        raceFinished = true;
+                        alert("The race has been won by " + horseSprite.querySelector(".horse-name").textContent + "!");
+                        console.log(horseSprite.querySelector(".horse-name"));
+                        console.log(horseNumber);
+                        var nv = horseSprite.querySelector(".horse-name").textContent.substring(horseSprite.querySelector(".horse-name").textContent.length - 1);
+                        if (nv == horseNumber) {
+                            winLoseDisplay.textContent = "You win!";
+                            balance += betAmount * 4;
+                        } else {
+                            winLoseDisplay.textContent = "You lose.";
+                        }
+                        newBalance.textContent = balance;
+                        balanceDisplay.textContent = balance;
+                        placeBetButton.disabled = false;
+                    }
+                });
+            }, 100);
+
+        });
+
+
+
+
+
+    </script>
+</body>
+
+</html>
